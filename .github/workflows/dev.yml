@@ -33,7 +33,7 @@ jobs:
           password: ${{ secrets.HOST_PASSWORD }}
           port: "22"
           source: "agora_backend.tar"
-          target: "agora/images"
+          target: "/home/agora/images"
 
   Deploy:
     needs: Build
