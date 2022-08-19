@@ -28,9 +28,9 @@ jobs:
       - name: Transfer image to VM
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.DEV_HOST }}
-          username: ${{ secrets.DEV_USERNAME }}
-          key: ${{ secrets.DEV_KEY }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.HOST_USERNAME }}
+          password: ${{ secrets.HOST_PASSWORD }}
           port: "22"
           source: "agora_backend.tar"
           target: "agora/images"
@@ -46,9 +46,9 @@ jobs:
       - name: Load image from file
         uses: appleboy/ssh-action@v0.1.4
         with:
-          host: ${{ secrets.DEV_HOST }}
-          username: ${{ secrets.DEV_USERNAME }}
-          key: ${{ secrets.DEV_KEY }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.HOST_USERNAME }}
+          password: ${{ secrets.HOST_PASSWORD }}
           script: |
             cd /home/agora/images
             sudo docker load -i agora_backend.tar
@@ -56,8 +56,8 @@ jobs:
       - name: Update docker service
         uses: appleboy/ssh-action@v0.1.4
         with:
-          host: ${{ secrets.DEV_HOST }}
-          username: ${{ secrets.DEV_USERNAME }}
-          key: ${{ secrets.DEV_KEY }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.HOST_USERNAME }}
+          password: ${{ secrets.HOST_PASSWORD }}
           script: |
             sudo docker service update --image agora_backend:latest agora_backend --force
