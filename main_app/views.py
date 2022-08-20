@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from project.permissions import CustomIsAuthenticated
-from .serializers import PageSerializer
+from .serializers import PageSerializer, ProductSerializer
 from .models import Project, Page, Product
 
 
@@ -41,6 +41,64 @@ def get_object_from_queryset_by_id(queryset, object_id, default=None):
         return queryset.get(id=object_id)
     except BaseException:
         return default
+
+
+class ProductsView(APIView):
+    permission_classes = [CustomIsAuthenticated]
+
+    def get(self, request):
+        product = get_object_from_queryset_by_id(Product.objects.all(), request.query_params.get('product_id'))
+        if not product:
+            return Response(status=status.HTTP_404_NOT_FOUND, data={
+                'message': 'Product not found.',
+            })
+        serializer = ProductSerializer(product, context={'request': request}).data
+
+        return Response(status=status.HTTP_200_OK, data={
+            'product': serializer,
+        })
+
+    def post(self, request):
+        product = Product.objects.create(
+            project=Project.objects.get(id=request.data['project_id']),
+            name=request.data['name'],
+        )
+        serializer = ProductSerializer(product, context={'request': request}).data
+
+        return Response(status=status.HTTP_200_OK, data={
+            'product': serializer,
+        })
+
+    def delete(self, request):
+        product = get_object_from_queryset_by_id(Product.objects.all(), request.query_params.get('product_id'))
+        if not product:
+            return Response(status=status.HTTP_404_NOT_FOUND, data={
+                'message': 'Product not found.',
+            })
+        product.delete()
+
+        return Response(status=status.HTTP_200_OK, data={
+            'message': 'Product deleted.',
+        })
+
+
+class UpdateProductView(APIView):
+    permission_classes = [CustomIsAuthenticated]
+
+    def post(self, request):
+        product = get_object_from_queryset_by_id(Product.objects.all(), request.data['product_id'])
+        if not product:
+            return Response(status=status.HTTP_404_NOT_FOUND, data={
+                'message': 'Product not found.',
+            })
+        if 'name' in request.data:
+            product.name = request.data['name']
+        product.save()
+        serializer = ProductSerializer(product, context={'request': request}).data
+
+        return Response(status=status.HTTP_200_OK, data={
+            'product': serializer,
+        })
 
 
 class PagesView(APIView):
