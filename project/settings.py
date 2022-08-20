@@ -47,7 +47,6 @@ DB_USER = get_env_var(str, 'DB_USER', DEBUG)
 DB_PASSWORD = get_env_var(str, 'DB_PASSWORD', DEBUG)
 DB_HOST = get_env_var(str, 'DB_HOST', DEBUG)
 
-
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -169,6 +168,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ORIGIN_ALLOW_ALL = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+CSRF_TRUSTED_ORIGINS = ['https://agora.reality-x.space']
 
 AUTH_USER_MODEL = 'users.User'
 
