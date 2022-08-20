@@ -90,6 +90,19 @@ class UpdateProductView(APIView):
         })
 
 
+class AllPagesView(APIView):
+    permission_classes = [CustomIsAuthenticated]
+
+    def get(self, request):
+        pages = Page.objects.all()
+        serializer = PageSerializer(pages, context={'request': request}, many=True).data
+
+        return Response(status=status.HTTP_200_OK, data={
+            'pages': serializer,
+            'schema': get_schema(request),
+        })
+
+
 class PagesView(APIView):
     permission_classes = [CustomIsAuthenticated]
 

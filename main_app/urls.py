@@ -8,6 +8,7 @@ urlpatterns = [
     # Pages
     path('pages', views.PagesView.as_view()),
     path('pages/update', views.UpdatePageView.as_view()),
+    path('pages/all', views.AllPagesView.as_view()),
 
     # Products
     path('products', views.ProductsView.as_view()),
