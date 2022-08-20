@@ -9,21 +9,10 @@ from django.apps import apps
 from rest_framework.response import Response
 from rest_framework import status
 
+from users.models import User
 from project.permissions import CustomIsAuthenticated
 from .serializers import PageSerializer, ProductSerializer
-from .models import Project, Page, Product
-
-
-# class ProjectsView(APIView):
-#     permission_classes = [CustomIsAuthenticated]
-#
-#     def post(self, request):
-#         project = Project.objects.create(
-#             user=request.user,
-#             name=request.data['name'],
-#
-#         )
-#         return Response(status=status.HTTP_201_CREATED)
+from .models import Page, Product
 
 
 def get_schema(request):
@@ -60,7 +49,7 @@ class ProductsView(APIView):
 
     def post(self, request):
         product = Product.objects.create(
-            project=Project.objects.get(id=request.data['project_id']),
+            user=request.user,
             name=request.data['name'],
         )
         serializer = ProductSerializer(product, context={'request': request}).data
@@ -105,7 +94,7 @@ class PagesView(APIView):
     permission_classes = [CustomIsAuthenticated]
 
     def get(self, request):
-        page = get_object_from_queryset_by_id(Page.objects.filter(project__user=request.user),
+        page = get_object_from_queryset_by_id(Page.objects.filter(user=request.user),
                                               request.query_params.get('page_id'))
         if not page:
             return Response(status=status.HTTP_404_NOT_FOUND, data={
@@ -120,7 +109,7 @@ class PagesView(APIView):
 
     def post(self, request):
         page = Page.objects.create(
-            project=Project.objects.get(id=request.data['project_id']),
+            user=request.user,
             json=request.data['json'],
             template=request.data['template'],
         )
@@ -132,7 +121,7 @@ class PagesView(APIView):
         })
 
     def delete(self, request):
-        page = get_object_from_queryset_by_id(Page.objects.filter(project__user=request.user),
+        page = get_object_from_queryset_by_id(Page.objects.filter(user=request.user),
                                               request.query_params.get('page_id'))
         if not page:
             return Response(status=status.HTTP_404_NOT_FOUND, data={
@@ -149,7 +138,7 @@ class UpdatePageView(APIView):
     permission_classes = [CustomIsAuthenticated]
 
     def post(self, request):
-        page = get_object_from_queryset_by_id(Page.objects.filter(project__user=request.user),
+        page = get_object_from_queryset_by_id(Page.objects.filter(user=request.user),
                                               request.data['page_id'])
         if not page:
             return Response(status=status.HTTP_404_NOT_FOUND, data={
@@ -171,7 +160,7 @@ class UpdatePageView(APIView):
 class PreviewView(APIView):
 
     def get(self, request):
-        page = get_object_from_queryset_by_id(Page.objects.filter(project__user=request.user),
+        page = get_object_from_queryset_by_id(Page.objects.all(),
                                               request.query_params.get('page_id'))
         if not page:
             return Response(status=status.HTTP_404_NOT_FOUND, data={

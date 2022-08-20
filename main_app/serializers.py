@@ -1,13 +1,6 @@
 from rest_framework import serializers
 
-from main_app.models import Project, Page, Product
-
-
-class ProjectSerializer(serializers.ModelSerializer):
-    class Meta:
-        depth = 0
-        model = Project
-        fields = '__all__'
+from main_app.models import Page, Product
 
 
 class PageSerializer(serializers.ModelSerializer):

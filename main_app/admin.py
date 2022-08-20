@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from main_app.models import Project, Page, Product
+from main_app.models import Page, Product
 
 
 # class SessionAdmin(admin.ModelAdmin):
@@ -12,18 +12,13 @@ from main_app.models import Project, Page, Product
 #     search_fields = ['id']
 
 
-class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'user',)
-
-
 class PageAdmin(admin.ModelAdmin):
-    list_display = ('id', 'project',)
+    list_display = ('id', 'user',)
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'project',)
+    list_display = ('id', 'name', 'user',)
 
 
-admin.site.register(Project, ProjectAdmin)
 admin.site.register(Page, PageAdmin)
 admin.site.register(Product, ProductAdmin)
