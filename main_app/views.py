@@ -51,6 +51,7 @@ class ProductsView(APIView):
         product = Product.objects.create(
             user=request.user,
             name=request.data['name'],
+            image=request.data['image'],
         )
         serializer = ProductSerializer(product, context={'request': request}).data
 
@@ -82,6 +83,8 @@ class UpdateProductView(APIView):
             })
         if 'name' in request.data:
             product.name = request.data['name']
+        if 'image' in request.data:
+            product.image = request.data['image']
         product.save()
         serializer = ProductSerializer(product, context={'request': request}).data
 
